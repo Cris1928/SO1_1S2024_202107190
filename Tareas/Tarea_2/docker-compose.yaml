@@ -1,0 +1,27 @@
+version: '3'
+services:
+  mongo:
+    image: mongo
+    container_name: 'MongoDBD'
+    restart: always
+    volumes:
+      - mongo_db:/data/db
+    ports:
+      - "27017:27017"
+
+  backend:  
+    build: ./backend
+    image: 'cris1928/backendimg'
+    container_name: 'tarea2backend'
+    restart: always
+    ports: 
+      - '5000:5000'
+
+  fronted:  
+    image: 'cris1928/frontedimg'
+    container_name: 'tarea2fronted'
+    ports:
+      - '5173:5173'
+
+volumes:
+  mongo_db:

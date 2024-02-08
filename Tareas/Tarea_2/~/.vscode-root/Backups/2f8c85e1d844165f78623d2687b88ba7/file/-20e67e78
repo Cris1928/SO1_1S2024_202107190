@@ -1,0 +1,82 @@
+file:///home/daniel/Escritorio/SO1_1S2024_202107190/Tareas/Tarea_2/fronted/src/App.tsx {"mtime":1707178971117,"ctime":1707178971117,"size":905,"etag":"3bs1lrkgat6","orphaned":false,"typeId":""}
+/*import { useEffect, useState } from 'react'
+
+import './App.css'
+
+function App() {
+  const [backendData, setBackendData]=useState([ {}])
+  useEffect (()=>{fetch("/api").then(
+
+    response => response.json()
+  ).then(data => {setBackendData(data)})
+}, [] )
+  return (
+    <>
+     
+    </>
+  )
+}
+
+export default App*/
+
+import React, { useRef } from 'react';
+
+const App: React.FC = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleCapture = async () => {
+    try {
+      const input = inputRef.current;
+
+      if (input && input.files && input.files.length > 0) {
+        const file = input.files[0];
+        const base64 = await convertToBase64(file);
+        const currentDate = new Date().toLocaleString();
+
+        sendToServer({ base64Image: base64, currentDate });
+      } else {
+        console.error('No file selected.');
+      }
+    } catch (error) {
+      console.error('Error capturing image:', error);
+    }
+  };
+
+  const convertToBase64 = (file: File) => {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result as string);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const sendToServer = async (data: { base64Image: string; currentDate: string }) => {
+    try {
+      const response = await fetch('http://localhost:3001/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      console.log('Server Response:', result);
+    } catch (error) {
+      console.error('Error sending data to server:', error);
+    }
+  };
+
+  return (
+    <div>
+      <h1>Photo Capture and Upload</h1>
+      <input type="file" accept="image/*" ref={inputRef} />
+      <button onClick={handleCapture}>Capture and Upload</button>
+    </div>
+  );
+};
+
+export default App;

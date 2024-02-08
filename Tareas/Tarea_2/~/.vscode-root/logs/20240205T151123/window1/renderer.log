@@ -1,0 +1,19 @@
+2024-02-05 15:11:47.151 [info] [perf] Render performance baseline is 427ms
+2024-02-05 15:13:38.042 [error] Error: The editor could not be opened because the file was not found.
+    at fh.bc (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:2297:19556)
+    at async fh.setInput (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:2297:18643)
+    at async s.M (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:2295:20269)
+    at async s.D (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:2295:18937)
+    at async s.openEditor (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:2295:17925)
+    at async vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:2480:12423
+    at async gn.openEditors (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:2480:12864)
+    at async Promise.all (index 0)
+    at async Object.K [as settled] (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:129:22261)
+    at async E.openEditors (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:2310:32063)
+    at async E.handleDrop (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:2320:27720)
+2024-02-05 15:15:28.914 [info] [perf] Render performance baseline is 446ms
+2024-02-05 15:35:03.149 [error] Error: ENOENT: no such file or directory, copyfile '/home/daniel/Escritorio/SO1_1S2024_202107190/Tareas/Tarea_2/Mongo/docker-compose.yaml' -> '/home/daniel/Escritorio/SO1_1S2024_202107190/Tareas/Tarea_2/~/.vscode-root/User/History/d830b77/YI6Q.yaml': EntryNotFound (FileSystemError): Error: ENOENT: no such file or directory, copyfile '/home/daniel/Escritorio/SO1_1S2024_202107190/Tareas/Tarea_2/Mongo/docker-compose.yaml' -> '/home/daniel/Escritorio/SO1_1S2024_202107190/Tareas/Tarea_2/~/.vscode-root/User/History/d830b77/YI6Q.yaml'
+    at n.create (/usr/share/code/resources/app/out/vs/code/electron-main/main.js:37:3400)
+    at i (/usr/share/code/resources/app/out/vs/code/electron-main/main.js:37:3512)
+    at t.ab (/usr/share/code/resources/app/out/vs/code/electron-main/main.js:42:38244)
+    at t.Y (/usr/share/code/resources/app/out/vs/code/electron-main/main.js:42:37481)
