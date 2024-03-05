@@ -1,0 +1,1 @@
+savedcmd_/home/daniel/Desktop/Proyecto1/backendgo/modulos/ram/ram_so1_1s2024.mod := printf '%s\n'   ram_so1_1s2024.o | awk '!x[$$0]++ { print("/home/daniel/Desktop/Proyecto1/backendgo/modulos/ram/"$$0) }' > /home/daniel/Desktop/Proyecto1/backendgo/modulos/ram/ram_so1_1s2024.mod

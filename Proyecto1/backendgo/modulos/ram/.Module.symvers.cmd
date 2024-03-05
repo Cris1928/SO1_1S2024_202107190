@@ -1,0 +1,1 @@
+savedcmd_/home/daniel/Desktop/Proyecto1/backendgo/modulos/ram/Module.symvers :=  scripts/mod/modpost -m -a      -o /home/daniel/Desktop/Proyecto1/backendgo/modulos/ram/Module.symvers -T /home/daniel/Desktop/Proyecto1/backendgo/modulos/ram/modules.order -i Module.symvers -e 

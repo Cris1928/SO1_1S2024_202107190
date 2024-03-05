@@ -1,0 +1,1 @@
+savedcmd_/home/daniel/Desktop/Proyecto1/backendgo/modulos/cpu/cpu_so1_1s2024.mod := printf '%s\n'   cpu_so1_1s2024.o | awk '!x[$$0]++ { print("/home/daniel/Desktop/Proyecto1/backendgo/modulos/cpu/"$$0) }' > /home/daniel/Desktop/Proyecto1/backendgo/modulos/cpu/cpu_so1_1s2024.mod
