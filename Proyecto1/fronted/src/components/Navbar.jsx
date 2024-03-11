@@ -7,10 +7,10 @@ function Navbar() {
        <NavContainer >
        <h2 >SO1<span>P1</span></h2>
        <div> 
-       <a  href="/monitoreo_r"> Monitoreo_r</a>
-       <a href="/monitoreo_t"> Monitoreo_t</a>
+       <a  href="/monitoreo_r"> Monitoreo</a>
+       <a href="/monitoreo_t"> Historico</a>
        <a href="/arbol"> Arbol</a>
-       <a  href="/simulacion_1">Simulacion_1 </a>
+       <a  href="/simulacion_1">Estados </a>
        <a  href="/simulacion_2">Simulacion_2 </a>
 
        </div>

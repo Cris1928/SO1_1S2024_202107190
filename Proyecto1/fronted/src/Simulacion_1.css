@@ -1,0 +1,47 @@
+/* Simulacion.css */
+
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  h1 {
+    color: #333;
+  }
+  
+  /* Estilos para el contenedor principal */
+  div {
+    margin: 20px;
+  }
+  
+  /* Estilos para la lista desplegable */
+  #pidList {
+    margin-right: 10px;
+  }
+  
+  /* Estilos para los botones */
+  button {
+    margin-right: 10px;
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+  }
+  
+  /* Estilos específicos para cada botón */
+  button[data-type="New"] {
+    background-color: green; /* Botón "New" verde */
+  }
+  
+  button[data-type="Stop"] {
+    background-color: yellow; /* Botón "Stop" amarillo */
+  }
+  
+  button[data-type="Resume"] {
+    background-color: blue; /* Botón "Resume" azul */
+  }
+  
+  button[data-type="Kill"] {
+    background-color: red; /* Botón "Kill" rojo */
+  }

@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import Graphviz from 'graphviz-react';
+import '../Arbol.css';
 
 const GraphWrapper = React.forwardRef(({ dot, options }, ref) => {
   return (
@@ -117,7 +118,9 @@ const Arbol = () => {
       {showGraph && (
         <div>
           <GraphWrapper dot={generateDot()} options={{ width: 900, height: 900 }} ref={graphRef} />
+          
           <button onClick={handleDownload}>Descargar SVG</button>
+          
         </div>
       )}
     </div>
