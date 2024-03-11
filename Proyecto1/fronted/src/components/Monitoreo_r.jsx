@@ -1,24 +1,3 @@
-/*import React from 'react';
-
-function Monitoreo_r(){
-
-    return(
-        <>
-      
-       <div >
-
-       <h2>zsdd</h2>
-       <a > Monitoreo_r</a>
-
-
-       </div>
-      
-     </>
-    );
-}
-export default Monitoreo_r*/
-
-
 import React, { useState, useEffect } from 'react';
 import 'chart.js/auto';
 import { Pie } from  'react-chartjs-2';
