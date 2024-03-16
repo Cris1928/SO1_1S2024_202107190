@@ -7,7 +7,7 @@ const Monitoreo_tcpu = () => {
 
   const fetchData = () => {
     // Llamada a la API para obtener datos
-    fetch('http://localhost:5200/api/data/cpu')
+    fetch('/api/datascpus')
 
       .then((response) => response.json())
       .then((data) => {

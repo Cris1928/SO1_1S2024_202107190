@@ -16,6 +16,8 @@ import (
 	"strconv"
 	"time"
 
+	//"strings"
+
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -42,18 +44,110 @@ func ConectarBD() *sql.DB {
 	dbPort := os.Getenv("DB_PORT")
 	dbName := os.Getenv("DB_NAME")
 
-	conexionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbUser, dbPassword, dbHost, dbPort, dbName)
+	// Conectar a MySQL sin especificar la base de datos
+	conexionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/?parseTime=true", dbUser, dbPassword, dbHost, dbPort)
 
 	conexion, err := sql.Open("mysql", conexionString)
 	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Verificar si la base de datos existe, de lo contrario, crearla
+	if err := verificarBaseDatos(conexion, dbName); err != nil {
+		log.Fatal(err)
+	}
+
+	// Conectar a la base de datos especificada
+	conexionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbUser, dbPassword, dbHost, dbPort, dbName)
+	conexion, err = sql.Open("mysql", conexionString)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err != nil {
 		fmt.Println(err)
 	} else {
+		crearTabla(conexion, "ram")
+		crearTabla(conexion, "cpu")
 		fmt.Println("Conexion con MySQL Correcta")
 	}
+	/*
+		//-----
+		// Verificar si la base de datos "Proyecto1" existe
+		err = conexion.Ping()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// Seleccionar la base de datos "Proyecto1"
+		_, err = conexion.Exec("USE Proyecto1")
+		if err != nil {
+			// La base de datos "Proyecto1" no existe, la creamos
+			crearDBQuery := "CREATE DATABASE IF NOT EXISTS Proyecto1"
+			_, err := conexion.Exec(crearDBQuery)
+			if err != nil {
+				log.Fatal(err)
+			}
+			_, err = conexion.Exec("USE Proyecto1")
+			if err != nil {
+				log.Fatal(err)
+			}
+			fmt.Println("Base de datos Proyecto1 creada correctamente")
+		}
+
+		// Crear las tablas si no existen
+		crearTabla(conexion, "ram")
+		crearTabla(conexion, "cpu")*/
+	//-----
+
 	return conexion
 }
 
+func verificarBaseDatos(db *sql.DB, dbName string) error {
+	// Consultar si la base de datos existe
+	query := fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s", dbName)
+	_, err := db.Exec(query)
+	return err
+}
+func crearTabla(db *sql.DB, tabla string) {
+	// Query para verificar si la tabla existe
+	query := fmt.Sprintf("SELECT 1 FROM %s LIMIT 1", tabla)
+
+	_, err := db.Exec(query)
+	if err != nil {
+		// La tabla no existe, la creamos
+		crearQuery := fmt.Sprintf("CREATE TABLE %s (FECHA VARCHAR(50) PRIMARY KEY, Porcentaje INT)", tabla)
+		_, err := db.Exec(crearQuery)
+		if err != nil {
+			log.Fatal(err)
+
+		}
+		fmt.Printf("Tabla %s creada correctamente\n", tabla)
+	}
+}
+
+func crearDB(conexion *sql.DB) {
+	query := "CREATE DATABASE IF NOT EXISTS Proyecto1;"
+	_, err := conexion.Exec(query)
+	if err != nil {
+		crearQuery := "USE Proyecto1;"
+		_, err := conexion.Exec(crearQuery)
+		if err != nil {
+			log.Fatal(err)
+
+		}
+	} else {
+		fmt.Println("DATA BASE CREADA")
+	}
+
+}
+
 type Datacpu struct {
+	Fecha      string `json:"fecha"`
+	Porcentaje int    `json:"porcentaje"`
+}
+
+type Datacpu2 struct {
 	Fecha      string `json:"fecha"`
 	Porcentaje int    `json:"porcentaje"`
 }
@@ -207,7 +301,7 @@ func Insertdatacpu(info map[string]interface{}) {
 	fmt.Println(string(jsonData))
 
 	response := &http.Response{}
-	request, err := http.NewRequest("POST", "http://localhost:5200/registrocpu", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://localhost:5200/api/registrocpu", bytes.NewBuffer(jsonData))
 	if err != nil {
 		fmt.Println("eram2")
 		log.Fatal(err)
@@ -235,7 +329,7 @@ func Insertdataram(info map[string]interface{}) {
 		log.Fatal(err)
 	}
 	response := &http.Response{}
-	request, err := http.NewRequest("POST", "http://localhost:5200/registroram", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://localhost:5200/api/registroram", bytes.NewBuffer(jsonData))
 	if err != nil {
 		fmt.Println("eram2")
 		log.Fatal(err)
@@ -256,11 +350,8 @@ func Insertdataram(info map[string]interface{}) {
 }
 func Registrocpu(response http.ResponseWriter, request *http.Request) {
 	response.Header().Add("content-type", "application/json")
-	//var discoReg Disco
-	//var respuesta Respuesta
+
 	var dataCpu Datacpu
-	//now := time.Now()
-	//re := fmt.Sprint("%d-%02d-%02d %02d:%02d:%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second())
 	var respuesta Respuestacpu
 
 	json.NewDecoder((request.Body)).Decode(&dataCpu)
@@ -406,20 +497,23 @@ func main() {
 		// No hacer nada aquí, solo devolver un código 200 o 404
 		w.WriteHeader(http.StatusNoContent)
 	}).Methods("GET", "POST")
-	router.HandleFunc("/cpu", CPUModuleHandler).Methods("GET", "POST")
-	router.HandleFunc("/ram", RAMModuleHandler).Methods("GET", "POST")
-	router.HandleFunc("/datram", Getdatram).Methods("GET")
-	router.HandleFunc("/registroram", Registroram).Methods("POST")
-	router.HandleFunc("/datcpu", Getdatcpu).Methods("GET")
-	router.HandleFunc("/registrocpu", Registrocpu).Methods("POST")
+	router.HandleFunc("/api/cpu", CPUModuleHandler).Methods("GET", "POST")
+	router.HandleFunc("/api/ram", RAMModuleHandler).Methods("GET", "POST")
+	router.HandleFunc("/api/datram", Getdatram).Methods("GET")
+	router.HandleFunc("/api/registroram", Registroram).Methods("POST")
+	router.HandleFunc("/api/datcpu", Getdatcpu).Methods("GET")
+	router.HandleFunc("/api/registrocpu", Registrocpu).Methods("POST")
 
-	router.HandleFunc("/api/data/ram", GetDataram).Methods("GET")
-	router.HandleFunc("/api/data/cpu", GetDatacpu).Methods("GET")
+	router.HandleFunc("/api/datasrames", GetDataram2).Methods("GET")
 
-	router.HandleFunc("/start", StartProcess)
-	router.HandleFunc("/stop", StopProcess)
-	router.HandleFunc("/resume", ResumeProcess)
-	router.HandleFunc("/kill", KillProcess)
+	router.HandleFunc("/api/datascpus", GetDatacpu2).Methods("GET")
+
+	router.HandleFunc("/api/start", StartProcess)
+	router.HandleFunc("/api/stop", StopProcess)
+	router.HandleFunc("/api/resume", ResumeProcess)
+	router.HandleFunc("/api/kill", KillProcess)
+
+	//crearDB(conexion)
 
 	go func() {
 		log.Fatal(http.ListenAndServe(":5200", handlers.CORS()(router)))
@@ -511,7 +605,7 @@ func main() {
 
 func sendToAPI(route string, data interface{}) {
 
-	url := fmt.Sprintf("http://localhost:5200%s", route)
+	url := fmt.Sprintf("http://localhost:5200/api%s", route)
 
 	jsonData, err := json.Marshal(data)
 	if err != nil {
@@ -534,7 +628,9 @@ func sendToAPI(route string, data interface{}) {
 	log.Printf("Datos enviados a la ruta %s\n", route)
 }
 
+/*
 func GetDataram(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("entrando a getdataram")
 	// Configuración de la conexión a la base de datos
 	db, err := sql.Open("mysql", "root:secret@tcp(localhost:3306)/Proyecto1")
 	if err != nil {
@@ -564,38 +660,87 @@ func GetDataram(w http.ResponseWriter, r *http.Request) {
 	// Convertir a formato JSON y enviar la respuesta
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(data)
+}*/
+
+func GetDataram2(response http.ResponseWriter, request *http.Request) {
+	response.Header().Add("content-type", "application/json")
+	var lista []Dataram
+	//now := time.Now()
+	//re := fmt.Sprint("%d-%02d-%02d %02d:%02d:%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second())
+	query := "SELECT Fecha, Porcentaje FROM ram ORDER BY Fecha DESC LIMIT 10;"
+	result, err := conexion.Query(query)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	for result.Next() {
+		var datram Dataram
+
+		err = result.Scan(&datram.Fecha, &datram.Porcentaje)
+		if err != nil {
+			fmt.Println(err)
+		}
+		lista = append(lista, datram)
+	}
+	json.NewEncoder(response).Encode(lista)
 }
 
+/*
 func GetDatacpu(w http.ResponseWriter, r *http.Request) {
-	// Configuración de la conexión a la base de datos
-	db, err := sql.Open("mysql", "root:secret@tcp(localhost:3306)/Proyecto1")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
 
-	// Realizar la consulta
-	query := "SELECT Fecha, Porcentaje FROM cpu ORDER BY Fecha DESC LIMIT 10"
-	rows, err := db.Query(query)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	// Almacenar los resultados en un slice de Datos
-	var data []Datacpu
-	for rows.Next() {
-		var d Datacpu
-		err := rows.Scan(&d.Fecha, &d.Porcentaje)
+		// Configuración de la conexión a la base de datos
+		db, err := sql.Open("mysql", "root:secret@tcp(localhost:3306)/Proyecto1")
 		if err != nil {
 			log.Fatal(err)
 		}
-		data = append(data, d)
+		defer db.Close()
+
+		// Realizar la consulta
+		query := "SELECT Fecha, Porcentaje FROM cpu ORDER BY Fecha DESC LIMIT 10;"
+		rows, err := db.Query(query)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer rows.Close()
+
+		// Almacenar los resultados en un slice de Datos
+		var data []Datacpu2
+		for rows.Next() {
+			var d Datacpu2
+			err := rows.Scan(&d.Fecha, &d.Porcentaje)
+			if err != nil {
+				log.Fatal(err)
+			}
+			data = append(data, d)
+		}
+
+		// Convertir a formato JSON y enviar la respuesta
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(data)
+	}
+*/
+func GetDatacpu2(response http.ResponseWriter, request *http.Request) {
+
+	response.Header().Add("content-type", "application/json")
+	var lista []Datacpu
+	//now := time.Now()
+	//re := fmt.Sprint("%d-%02d-%02d %02d:%02d:%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second())
+	query := "SELECT Fecha, Porcentaje FROM cpu ORDER BY Fecha DESC LIMIT 10;"
+	result, err := conexion.Query(query)
+	if err != nil {
+		fmt.Println(err)
 	}
 
-	// Convertir a formato JSON y enviar la respuesta
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(data)
+	for result.Next() {
+		var datcpu Datacpu
+
+		err = result.Scan(&datcpu.Fecha, &datcpu.Porcentaje)
+		if err != nil {
+			fmt.Println(err)
+		}
+		lista = append(lista, datcpu)
+	}
+	json.NewEncoder(response).Encode(lista)
 }
 
 /*
@@ -666,7 +811,7 @@ func postScheduledData() {
 				fmt.Println(err)
 			}
 			//Mandar respuesta
-			url := "http://34.74.125.199:5200/cpu"
+			url := "http://34.74.125.199:5200/api/cpu"
 			//Mandar cpu_info que es un json
 			p_cpu, err := cpu.Percent(time.Second, false)
 			if err != nil {
@@ -714,7 +859,7 @@ func postScheduledData() {
 			//-fmt.Println("ram_info")
 			//-fmt.Println(ram_info.Libre)
 			//Mandar respuesta
-			url = "http://34.74.125.199:5200/ram"
+			url = "http://34.74.125.199:5200/api/ram"
 			//Mandar ram_info que es un json
 			jsonValue, _ = json.Marshal(ram_info)
 			//fmt.Println("jsonValue")

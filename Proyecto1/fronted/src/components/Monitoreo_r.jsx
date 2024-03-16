@@ -12,8 +12,8 @@ const Monitoreo_r = () => {
     
     const obtenerDatos = async () => {
       try {
-        const respuesta = await fetch('http://localhost:5200/ram');
-        const respuestacpu = await fetch('http://localhost:5200/cpu');
+        const respuesta = await fetch('/api/ram');
+        const respuestacpu = await fetch('/api/cpu');
   
         if (!respuesta.ok) {
           throw new Error('Error al obtener los datos de RAM');
@@ -51,7 +51,7 @@ const Monitoreo_r = () => {
 
     const obtenerDatoscpu = async () => {
       try {
-        const respuesta = await fetch('http://localhost:5200/cpu');
+        const respuesta = await fetch('/api/cpu');
   
         if (!respuesta.ok) {
           throw new Error('Error al obtener los datos de cpu');
@@ -73,7 +73,7 @@ const Monitoreo_r = () => {
 
     const obtenerDatosRam = async () => {
       try {
-        const respuesta = await fetch('http://localhost:5200/ram');
+        const respuesta = await fetch('/api/ram');
   
         if (!respuesta.ok) {
           throw new Error('Error al obtener los datos de RAM');
@@ -254,7 +254,7 @@ function Monitoreo_r(){
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5200/ram');
+        const response = await fetch('/api/ram');
         const jsonData = await response.json();
 
         // Actualizamos el estado con los nuevos datos
@@ -304,7 +304,7 @@ const Monitoreo_r = () => {
 
   const obtenerDatosRam = async () => {
     try {
-      const respuesta = await fetch('http://localhost:5200/ram');
+      const respuesta = await fetch('/api/ram');
 
       if (!respuesta.ok) {
         throw new Error('Error al obtener los datos de RAM');

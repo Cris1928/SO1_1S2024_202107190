@@ -85,10 +85,10 @@ const Arbol = () => {
     downloadLink.click();
   };
 
-  // Simula la carga inicial de datos desde http://localhost:5200/cpu
+  // Simula la carga inicial de datos desde /api/cpu
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:5200/cpu');
+      const response = await fetch('/api/cpu');
       const data = await response.json();
       setProcesses(data.processes);
     } catch (error) {
@@ -223,10 +223,10 @@ const handleDownload = () => {
 
 
 
-  // Simula la carga inicial de datos desde http://localhost:5200/cpu
+  // Simula la carga inicial de datos desde /api/cpu
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:5200/cpu');
+      const response = await fetch('/api/cpu');
       const data = await response.json();
       setProcesses(data.processes);
     } catch (error) {
@@ -341,10 +341,10 @@ const generateDot =() => {
 
 
 
-  // Simula la carga inicial de datos desde http://localhost:5200/cpu
+  // Simula la carga inicial de datos desde /api/cpu
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:5200/cpu');
+      const response = await fetch('/api/cpu');
       const data = await response.json();
       setProcesses(data.processes);
     } catch (error) {

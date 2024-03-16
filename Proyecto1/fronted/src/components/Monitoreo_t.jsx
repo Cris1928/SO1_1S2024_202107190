@@ -8,7 +8,7 @@ const Monitoreo_t = () => {
 
   const fetchData = () => {
     // Llamada a la API para obtener datos
-    fetch('http://localhost:5200/api/data/ram')
+    fetch('/api/datasrames')
 
       .then((response) => response.json())
       .then((data) => {
@@ -80,7 +80,7 @@ const Monitoreo_t = () => {
   };
     useEffect(() => {
       // Realizar la solicitud al servidor backend
-      fetch('http://localhost:5200/api/data')
+      fetch('/api/data')
         .then((response) => response.json())
         .then((data) => {
           // Procesar los datos para la gráfica

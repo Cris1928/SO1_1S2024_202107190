@@ -37,7 +37,7 @@ function Simulacion_1(){
         setSelectedName(selectedProcess.name);
            // Enviar el PID al servidor
     try {
-        const response = await fetch(` http://localhost:5200/start?pid=${selectedPid}`, {
+        const response = await fetch(`/api/start?pid=${selectedPid}`, {
           method: 'POST', // Puedes cambiar a 'GET' si prefieres un método GET
           headers: {
             'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ function Simulacion_1(){
 
 
         try {
-            const response = await fetch(` http://localhost:5200/stop?pid=${selectedPid}`, {
+            const response = await fetch(`/api/stop?pid=${selectedPid}`, {
               method: 'POST', // Puedes cambiar a 'GET' si prefieres un método GET
               headers: {
                 'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ function Simulacion_1(){
         const selectedProcess = processes.find((process) => process.pid === parseInt(selectedPid));
         setSelectedName(selectedProcess.name);
         try {
-            const response = await fetch(` http://localhost:5200/resume?pid=${selectedPid}`, {
+            const response = await fetch(`/api/resume?pid=${selectedPid}`, {
               method: 'POST', // Puedes cambiar a 'GET' si prefieres un método GET
               headers: {
                 'Content-Type': 'application/json',
@@ -204,7 +204,7 @@ function Simulacion_1(){
         const selectedProcess = processes.find((process) => process.pid === parseInt(selectedPid));
         setSelectedName(selectedProcess.name);
         try {
-            const response = await fetch(` http://localhost:5200/kill?pid=${selectedPid}`, {
+            const response = await fetch(`/api/kill?pid=${selectedPid}`, {
               method: 'POST', // Puedes cambiar a 'GET' si prefieres un método GET
               headers: {
                 'Content-Type': 'application/json',
@@ -258,10 +258,10 @@ function Simulacion_1(){
   
   
   
-    // Simula la carga inicial de datos desde http://localhost:5200/cpu
+    // Simula la carga inicial de datos desde/api/cpu
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5200/cpu');
+        const response = await fetch('/api/cpu');
         const data = await response.json();
         setProcesses(data.processes);
       } catch (error) {

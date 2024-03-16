@@ -1,20 +1,17 @@
-#Utilizar Alpine
-FROM golang:alpine 
+# Usa la imagen oficial de Golang como base
+FROM golang:alpine
 
-#Directorio de trabajo
+# Establece el directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-#Copiar el código fuente
+# Copia los archivos del cliente a la imagen
 COPY . .
 
-#Compilar el código fuente
-RUN go build -o myapp
+# Compila el código Go
+RUN go build -o app
 
-#Exponer el puerto 8000
+# Expone el puerto necesario
 EXPOSE 5200
 
-#Ejecutar el binario
-CMD ["./myapp"]
-
-#Construir la imagen
-#docker build -t app_golang .
+# Comando para ejecutar la aplicación cuando se inicie el contenedor
+CMD ["./app"]
