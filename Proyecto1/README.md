@@ -256,3 +256,132 @@ const Monitoreo_t = () => {
 export default Monitoreo_t;
 
 ```
+
+
+
+
+## Árbol de Procesos
+
+![WhatsApp Image 2024-03-17 at 5 51 28 AM](https://github.com/Cris1928/SO1_1S2024_202107190/assets/98928867/d4688aa5-a7c5-4490-9f52-7743181d9968)
+
+
+Este graficara los procesos quqe posee el modulo de cpu, anteriormente se a explicado el como se recoge la informacion de este, en el codigo react utilizaremos "await" para poder tomar la informacion del localhost, al utilizar useState recogera la informacion de los procesos  como el nombre, pid y  los procesos hijos de este, siempre y cuando los posea, el pid de los procesos serivran para identificar que grafico se desea, estos se almacenaran en una lista para poder mostrarla en una lista desplegable, estos serviran para poder seleccionarlos y con un boton podra ejecutar el procesos de graficado utilizndo la libreria "graphviz-react".
+
+```
+import React, { useState, useRef } from 'react';
+import Graphviz from 'graphviz-react';
+import '../Arbol.css';
+
+const GraphWrapper = React.forwardRef(({ dot, options }, ref) => {
+  return (
+    <div ref={ref}>
+      <Graphviz dot={dot} options={options} />
+    </div>
+  );
+});
+
+const Arbol = () => {
+  const [selectedPid, setSelectedPid] = useState(null);
+  const [processes, setProcesses] = useState([]);
+  const [showGraph, setShowGraph] = useState(false);
+  const [childrensl, setChildrens] = useState([]);
+  const [selectedName, setSelectedName] = useState(null);
+  const graphRef = useRef(null);
+
+  // Función para manejar el cambio en la lista desplegable
+  const handleSelectChange = (event) => {
+    const selectedValue = event.target.value;
+    setSelectedPid(selectedValue);
+  };
+
+  // Función para manejar el clic en el botón
+  const handleButtonClick = () => {
+    if (selectedPid) {
+      const selectedProcess = processes.find((process) => process.pid === parseInt(selectedPid));
+      setSelectedName(selectedProcess.name);
+      if (selectedProcess && selectedProcess.child) {
+        setChildrens(selectedProcess.child);
+        
+        
+      }
+      setShowGraph(true);
+    }
+  };
+
+
+  const generateDot =() => {
+    let dot = graph  {
+  
+  
+  
+    dot += \n"${selectedPid}/${selectedName}";;
+    childrensl.forEach((item) => {
+  
+      dot += \n"${selectedPid}/${selectedName}";
+     // dot +=/${selectedName}";
+      dot += ` --"${item.pid}/${item.name}";`;
+    }
+    );
+    dot += ` \n}`;
+  
+    console.log(dot);
+    return dot;
+  };
+  
+  
+
+  const handleDownload = () => {
+    const svgElement = graphRef.current.querySelector('svg');
+    const svgData = new XMLSerializer().serializeToString(svgElement);
+
+    const downloadLink = document.createElement('a');
+    downloadLink.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgData);
+    downloadLink.download = 'graph.svg';
+    downloadLink.click();
+  };
+
+  // Simula la carga inicial de datos desde /api/cpu
+  const fetchData = async () => {
+    try {
+      const response = await fetch('/api/cpu');
+      const data = await response.json();
+      setProcesses(data.processes);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  // Llama a fetchData cuando se monta el componente
+  React.useEffect(() => {
+    fetchData();
+  }, []);
+
+  return (
+    <div>
+      <h1>Procesos</h1>
+      <label htmlFor="pidList">Selecciona un PID:</label>
+      <select id="pidList" onChange={handleSelectChange}>
+        <option value="">Seleccione un PID</option>
+        {processes.map((process) => (
+          <option key={process.pid} value={process.pid}>
+            {process.pid}
+          </option>
+        ))}
+      </select>
+      <button onClick={handleButtonClick}>Mostrar gráfico</button>
+
+      {showGraph && (
+        <div>
+          <GraphWrapper dot={generateDot()} options={{ width: 900, height: 900 }} ref={graphRef} />
+          
+          <button onClick={handleDownload}>Descargar SVG</button>
+          
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Arbol;
+```
+
