@@ -151,7 +151,7 @@ const Monitoreo_r = () => {
 
 export default Monitoreo_r;
 
-
+```
 
 
 ![WhatsApp Image 2024-03-17 at 4 28 27 AM](https://github.com/Cris1928/SO1_1S2024_202107190/assets/98928867/973c43d9-1fde-4ef8-b3a3-b4a22fa54710)
