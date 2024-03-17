@@ -18,6 +18,61 @@ Pasos para utilizarla desde el directorio /proc:
 - Para desplegarlo en el directorio /proc ejecutar el comando "sudo insmod cpu_so1_1s2024.ko"
 - Leer el archivo escrito cat cpu_so1_1s2024
 
+## ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ Base de datis MySQL
+La base de datos utillizada será en MySQL, y este realizara la conexion en el backend de golang, esto utilizando las variables de entorno "DB_USER", "DB_PASSWORD", "DB_HOST", "DB_PORT", "DB_NAME", estas serviran para poder realizar dicha conexion con la base de datos.
+```
+
+var conexion = ConectarBD()
+
+func ConectarBD() *sql.DB {
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_NAME")
+
+	// Conectar a MySQL sin especificar la base de datos
+	conexionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/?parseTime=true", dbUser, dbPassword, dbHost, dbPort)
+
+	conexion, err := sql.Open("mysql", conexionString)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Verificar si la base de datos existe, de lo contrario, crearla
+	if err := verificarBaseDatos(conexion, dbName); err != nil {
+		log.Fatal(err)
+	}
+
+	// Conectar a la base de datos especificada
+	conexionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", dbUser, dbPassword, dbHost, dbPort, dbName)
+	conexion, err = sql.Open("mysql", conexionString)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		crearTabla(conexion, "ram")
+		crearTabla(conexion, "cpu")
+		fmt.Println("Conexion con MySQL Correcta")
+	}
+	
+
+	return conexion
+}
+
+```
+
+
+
 ## ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ PLATAFORMA DE MONITOREO 
 ## Monitoreo en tiempo real
 
@@ -384,4 +439,43 @@ const Arbol = () => {
 
 export default Arbol;
 ```
+
+## Diagrama de Estado de Procesos
+
+![WhatsApp Image 2024-03-17 at 5 51 57 AM](https://github.com/Cris1928/SO1_1S2024_202107190/assets/98928867/9025bbf1-f3fa-4255-9bd8-0658df257693)
+
+Este posee:
+- Un Diagrama que muestre los Estados que han tenido un proceso.
+- Cuando ocurre un cambio de estado muestra el estado actual en el que seencuentra el proceso, es decir el nodo y arista de la transición poseera un colordiferente.
+el backend maneja 4 endpoints lso cuales son, "localhost:5200/api/start", "localhost:5200/api/stop", "localhost:5200/api/resume" y "localhost:5200/api/kill", estos funcionaran para poner en el estado del proceso en especifico indicado desde el fronted.
+
+```
+func StopProcess(w http.ResponseWriter, r *http.Request) {
+	pidStr := r.URL.Query().Get("pid")
+	if pidStr == "" {
+		http.Error(w, "Se requiere el parámetro 'pid'", http.StatusBadRequest)
+		return
+	}
+
+	pid, err := strconv.Atoi(pidStr)
+	if err != nil {
+		http.Error(w, "El parámetro 'pid' debe ser un número entero", http.StatusBadRequest)
+		return
+	}
+
+	// Enviar señal SIGSTOP al proceso con el PID proporcionado
+	cmd := exec.Command("kill", "-SIGSTOP", strconv.Itoa(pid))
+	err = cmd.Run()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error al detener el proceso con PID %d", pid), http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprintf(w, "Proceso con PID %d detenido", pid)
+}
+
+```
+
+
+al poner el estado seleccionado al procesos seleccionado este mostrara un grafico representativo del estado en especifico, esto utilizando la libreria "graphviz-ract".
 
