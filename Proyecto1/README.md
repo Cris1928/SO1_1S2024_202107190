@@ -20,6 +20,9 @@ Pasos para utilizarla desde el directorio /proc:
 
 ## ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ PLATAFORMA DE MONITOREO 
 ## Monitoreo en tiempo real
+
+![WhatsApp Image 2024-03-17 at 4 28 27 AM](https://github.com/Cris1928/SO1_1S2024_202107190/assets/98928867/973c43d9-1fde-4ef8-b3a3-b4a22fa54710)
+
 Este posee el porcentaje de ram utilizada y libre desplegada en una grafica circular, de igual manera con el cpu, esto utilizando la libreria "react-cjartjs-2".
 Desde el backend posee los ednpoints "localhost:5200/api/cpu" y "localhost:5200/api/ram" estos poseen la informacion del ultimo registro de su porcentaje en utilizacion de la ram y el cpu.
 
@@ -46,7 +49,7 @@ func RAMModuleHandler(w http.ResponseWriter, r *http.Request) {
 
 en el metodo RAMModuleHandler este recoge la infomracion que este despliega y lo envia a la ruta localhost:5200/api/ram.
 
-en el codigo react utilizaremos la libreria "react-chartjs-2" este recogera la informacion del json que posee el localhost "/api/ram" utilizando "await", estos datos seran recogidos por medio de useState para recoger esa informacion, estos los utilizaran las variables "porcentaje" y "porcentajecpu", posteriormete para crear las datas que poseeran los datos de esta grafica y utilizarlo en el codigo html del react
+en el codigo react utilizaremos la libreria "react-chartjs-2" este recogera la informacion del json que posee el localhost "/api/ram" utilizando "await", estos datos seran recogidos por medio de useState para recoger esa informacion, estos los utilizaran las variables "porcentaje" y "porcentajecpu", posteriormete para crear las datas que poseeran los datos de esta grafica y utilizarlo en el codigo html del react.
 
 
 
@@ -154,6 +157,102 @@ export default Monitoreo_r;
 ```
 
 
-![WhatsApp Image 2024-03-17 at 4 28 27 AM](https://github.com/Cris1928/SO1_1S2024_202107190/assets/98928867/973c43d9-1fde-4ef8-b3a3-b4a22fa54710)
 
 
+## Monitoreo a lo largo del Tiempo
+
+![WhatsApp Image 2024-03-17 at 5 50 27 AM](https://github.com/Cris1928/SO1_1S2024_202107190/assets/98928867/90ba8549-de57-444d-8e25-93af65d9f0d2)
+
+![WhatsApp Image 2024-03-17 at 5 50 45 AM](https://github.com/Cris1928/SO1_1S2024_202107190/assets/98928867/2abf3231-d0fa-4f07-921d-f6e3fb8db1b9)
+
+
+Este posee la informacion de los ultimos 10 registros del porcentaje de uso de ram y cpu, el backend enviara esa informacion proveniente de la base de datos a la direccion "localhost:5200/api/data/datarames"  y "localhost:5200/api/data/datascpus".
+```
+func GetDataram2(response http.ResponseWriter, request *http.Request) {
+	response.Header().Add("content-type", "application/json")
+	var lista []Dataram
+	//now := time.Now()
+	//re := fmt.Sprint("%d-%02d-%02d %02d:%02d:%02d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second())
+	query := "SELECT Fecha, Porcentaje FROM ram ORDER BY Fecha DESC LIMIT 10;"
+	result, err := conexion.Query(query)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	for result.Next() {
+		var datram Dataram
+
+		err = result.Scan(&datram.Fecha, &datram.Porcentaje)
+		if err != nil {
+			fmt.Println(err)
+		}
+		lista = append(lista, datram)
+	}
+	json.NewEncoder(response).Encode(lista)
+}
+```
+
+
+
+posteriormente en el codigo de react utilizaremos  las direcciones antes mencionadas, utilizando "await" recogerá la informacion del localhost, utilizando useState, podremos recoger esa informacion para poder utilizarla en el el codigo, utilizando un boton actualizaremos la informacion cada que lo requiramos.
+```
+import React, { useState, useEffect } from 'react';
+import 'chart.js/auto';
+import { Line } from 'react-chartjs-2';
+import Monitoreo_tcpu from './Monitoreo_tcpu.jsx'
+
+const Monitoreo_t = () => {
+  const [chartData, setChartData] = useState({ labels: [], datasets: [] });
+
+  const fetchData = () => {
+    // Llamada a la API para obtener datos
+    fetch('/api/datasrames')
+
+      .then((response) => response.json())
+      .then((data) => {
+        // Procesar los datos y actualizar el estado del gráfico
+        const labels = data.map((entry) => entry.fecha);
+        const dataset = {
+          label: 'Porcentaje',
+          data: data.map((entry) => entry.porcentaje),
+          fill: false,
+          lineTension: 0.5,
+          backgroundColor: 'rgba(75,192,192,0.4)',
+          borderColor: 'rgba(75,192,192,1)',
+          borderWidth: 2,
+        };
+
+        setChartData({ labels, datasets: [dataset] });
+      })
+      .catch((error) => {
+        console.error('Error al obtener datos de la API:', error);
+      });
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []); // La dependencia vacía asegura que useEffect solo se ejecute una vez al montar el componente
+
+  const handleRefresh = () => {
+    fetchData();
+  };
+
+  return (
+    <div className='Monitoreo_t' >
+    <div>
+      <h2>Gráfica Lineal Ram</h2>
+      <Line data={chartData} />
+      <button onClick={handleRefresh}>Actualizar Gráfica</button>
+    </div>
+    <div>
+  
+   <Monitoreo_tcpu/>
+  
+</div>
+</div>
+  );
+};
+
+export default Monitoreo_t;
+
+```
