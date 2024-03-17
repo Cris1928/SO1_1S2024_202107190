@@ -44,6 +44,141 @@ func RAMModuleHandler(w http.ResponseWriter, r *http.Request) {
 
 
 
+en el metodo RAMModuleHandler este recoge la infomracion que este despliega y lo envia a la ruta localhost:5200/api/ram.
+
+en el codigo react utilizaremos la libreria "react-chartjs-2" este recogera la informacion del json que posee el localhost "/api/ram" utilizando "await", estos datos seran recogidos por medio de useState para recoger esa informacion, estos los utilizaran las variables "porcentaje" y "porcentajecpu", posteriormete para crear las datas que poseeran los datos de esta grafica y utilizarlo en el codigo html del react
+
+
+
+
+
+import React, { useState, useEffect } from 'react';
+import 'chart.js/auto';
+import { Pie } from  'react-chartjs-2';
+
+
+const Monitoreo_r = () => {
+    const [datosRam, setDatosRam] = useState(null);
+    const [porcentaje, setPorcentaje] = useState(null);
+
+    const [datosCPU, setDatosCPU] = useState(null);
+    const [porcentajecpu, setPorcentajecpu] = useState(null);
+    
+    const obtenerDatos = async () => {
+      try {
+        const respuesta = await fetch('/api/ram');
+        const respuestacpu = await fetch('/api/cpu');
+  
+        if (!respuesta.ok) {
+          throw new Error('Error al obtener los datos de RAM');
+        }
+        if (!respuestacpu.ok) {
+          throw new Error('Error al obtener los datos de CPU');
+        }
+  
+        const datos = await respuesta.json();
+        setDatosRam(datos);
+
+        const datoscpu = await respuestacpu.json();
+        setDatosCPU(datoscpu);
+
+
+
+        const porcentajeNumerico = parseFloat(datos.porcentaje);
+        //setPorcentaje(datos.porcentaje);
+        setPorcentaje(isNaN(porcentajeNumerico)? null: porcentajeNumerico);
+
+
+        const porcentajeNumericocpu = parseFloat(datoscpu.cpu_porcentaje);
+        //setPorcentaje(datos.porcentaje);
+        setPorcentajecpu(isNaN(porcentajeNumericocpu)? null: porcentajeNumericocpu);
+
+    
+    
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+  
+
+    useEffect(() => {
+      // Obtener datos al montar el componente
+      obtenerDatos();
+      // Establecer un intervalo para obtener datos cada segundo
+      const intervalo = setInterval(() => {
+        obtenerDatos();
+      }, 2000);
+  
+      // Limpiar el intervalo al desmontar el componente para evitar fugas de memoria
+      return () => clearInterval(intervalo);
+    }, []);
+
+
+  
+
+  //datos para la grafica ram
+  const porcentajeUso=porcentaje !== null? porcentaje:0;
+  const data = { 
+    labels: ['total_ram','memoria_en_uso'],
+    datasets:  [{
+        
+        data: [porcentajeUso,100-porcentajeUso],
+        backgroundColor: ['green','blue']
+    }]
+
+};
+//configuracion para la grafica ram
+const opciones= {
+    maintainAspectRatio: false,
+    responsive: true,
+    
+};
+const contstye={
+    width: 2222,
+    heigth:2222,
+};
+
+
+  //datos para la grafica cpu
+  const porcentajeUsocpu=porcentajecpu !== null? porcentajecpu:0;
+  const datacpu = { 
+    labels: ['total_cpu','memoria_en_uso'],
+    datasets:  [{
+        label: "CPU",
+        data: [100-porcentajeUsocpu,porcentajeUsocpu],
+        backgroundColor: ['blue','green']
+    }]
+
+};
+//configuracion para la grafica cpu
+const opcionescpu= {
+    maintainAspectRatio: false,
+    responsive: true,
+    
+};
+const contstyecpu={
+    width: 2222,
+    heigth:2222,
+};
+
+
+
+    // Renderizar el componente según el estado de los datos
+    return (
+        <div className='Monitoreo_r' >
+         <div >
+        <Pie type='line' options={opciones} title="cpu" style={{height:"50vh"}} data={datacpu}  />
+       
+        </div>
+        <div >
+       <Pie type='line' title="ram" style={{height:"50vh"}} data={data} options={opciones}  />
+ 
+        </div>
+          </div> 
+    );
+  };
+
+export default Monitoreo_r;
 
 
 
