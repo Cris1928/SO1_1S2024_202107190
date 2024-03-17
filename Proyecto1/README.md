@@ -24,7 +24,6 @@ Este posee el porcentaje de ram utilizada y libre desplegada en una grafica circ
 Desde el backend posee los ednpoints "localhost:5200/api/cpu" y "localhost:5200/api/ram" estos poseen la informacion del ultimo registro de su porcentaje en utilizacion de la ram y el cpu.
 
 func RAMModuleHandler(w http.ResponseWriter, r *http.Request) {
-	//fmt.Println(" ==================== DATOS MODULO RAM ==================== ")
 
 	cmdRam := exec.Command("sh", "-c", "cat /proc/ram_so1_1s2024")
 	outRam, err := cmdRam.CombinedOutput()
