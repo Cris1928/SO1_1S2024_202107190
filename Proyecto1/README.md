@@ -21,7 +21,8 @@ Pasos para utilizarla desde el directorio /proc:
 ## ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ Base de datos MySQL
 La base de datos utillizada será en MySQL, y este realizara la conexion en el backend de golang, esto utilizando las variables de entorno "DB_USER", "DB_PASSWORD", "DB_HOST", "DB_PORT", "DB_NAME", estas serviran para poder realizar dicha conexion con la base de datos.
 
-![WhatsApp Image 2024-03-17 at 6 54 57 AM](https://github.com/Cris1928/SO1_1S2024_202107190/assets/98928867/0b4115b8-1c18-47eb-b6b8-41cd91a138a2)
+![WhatsApp Image 2024-03-17 at 6 54 57 AM](https://github.com/Cris1928/SO1_1S2024_202107190/assets/98928867/0b4115b8-1c18-47eb-b6b8-41cd91a138a2) ![WhatsApp Image 2024-03-17 at 6 55 27 AM](https://github.com/Cris1928/SO1_1S2024_202107190/assets/98928867/25ae0006-2fc5-4769-9808-675bc1b8522b)
+
 
 
 ```
