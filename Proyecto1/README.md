@@ -20,4 +20,34 @@ Pasos para utilizarla desde el directorio /proc:
 
 ## ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ PLATAFORMA DE MONITOREO 
 ## Monitoreo en tiempo real
+Este posee el porcentaje de ram utilizada y libre desplegada en una grafica circular, de igual manera con el cpu, esto utilizando la libreria "react-cjartjs-2".
+Desde el backend posee los ednpoints "localhost:5200/api/cpu" y "localhost:5200/api/ram" estos poseen la informacion del ultimo registro de su porcentaje en utilizacion de la ram y el cpu.
+
+func RAMModuleHandler(w http.ResponseWriter, r *http.Request) {
+	//fmt.Println(" ==================== DATOS MODULO RAM ==================== ")
+
+	cmdRam := exec.Command("sh", "-c", "cat /proc/ram_so1_1s2024")
+	outRam, err := cmdRam.CombinedOutput()
+	if err != nil {
+		fmt.Println("eerror", err)
+	}
+	//fmt.Println("-------------------- RAM --------------------")
+	var ram_info Ram
+	err = json.Unmarshal([]byte(outRam), &ram_info)
+	if err != nil {
+		fmt.Println(err)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode((ram_info))
+
+}
+
+
+
+
+
+
 ![WhatsApp Image 2024-03-17 at 4 28 27 AM](https://github.com/Cris1928/SO1_1S2024_202107190/assets/98928867/973c43d9-1fde-4ef8-b3a3-b4a22fa54710)
+
+
