@@ -18,8 +18,12 @@ Pasos para utilizarla desde el directorio /proc:
 - Para desplegarlo en el directorio /proc ejecutar el comando "sudo insmod cpu_so1_1s2024.ko"
 - Leer el archivo escrito cat cpu_so1_1s2024
 
-## ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ Base de datis MySQL
+## ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ Base de datos MySQL
 La base de datos utillizada será en MySQL, y este realizara la conexion en el backend de golang, esto utilizando las variables de entorno "DB_USER", "DB_PASSWORD", "DB_HOST", "DB_PORT", "DB_NAME", estas serviran para poder realizar dicha conexion con la base de datos.
+
+![WhatsApp Image 2024-03-17 at 6 54 57 AM](https://github.com/Cris1928/SO1_1S2024_202107190/assets/98928867/0b4115b8-1c18-47eb-b6b8-41cd91a138a2)
+
+
 ```
 
 var conexion = ConectarBD()
