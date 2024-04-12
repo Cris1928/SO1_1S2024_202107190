@@ -1,0 +1,98 @@
+[
+    {
+      "name": "Nirvana",
+      "album": "utero",
+      "year": "1999",
+      "rank": "22"
+    },
+    {
+      "name": "The Beatles",
+      "album": "Abbey Road",
+      "year": "1969",
+      "rank": "1"
+    },
+    {
+      "name": "Pink Floyd",
+      "album": "The Dark Side of the Moon",
+      "year": "1973",
+      "rank": "2"
+    },
+    {
+      "name": "Led Zeppelin",
+      "album": "IV",
+      "year": "1971",
+      "rank": "3"
+    },
+    {
+      "name": "The Rolling Stones",
+      "album": "Exile on Main St.",
+      "year": "1972",
+      "rank": "4"
+    },
+    {
+      "name": "Bob Dylan",
+      "album": "Highway 61 Revisited",
+      "year": "1965",
+      "rank": "5"
+    },
+    {
+      "name": "Bruce Springsteen",
+      "album": "Born to Run",
+      "year": "1975",
+      "rank": "6"
+    },
+    {
+      "name": "Michael Jackson",
+      "album": "Thriller",
+      "year": "1982",
+      "rank": "7"
+    },
+    {
+      "name": "Prince",
+      "album": "Purple Rain",
+      "year": "1984",
+      "rank": "8"
+    },
+    {
+      "name": "David Bowie",
+      "album": "The Rise and Fall of Ziggy Stardust and the Spiders from Mars",
+      "year": "1972",
+      "rank": "9"
+    },
+    {
+      "name": "Queen",
+      "album": "A Night at the Opera",
+      "year": "1975",
+      "rank": "10"
+    },
+    {
+      "name": "The Beach Boys",
+      "album": "Pet Sounds",
+      "year": "1966",
+      "rank": "11"
+    },
+    {
+      "name": "Elvis Presley",
+      "album": "Elvis Presley",
+      "year": "1956",
+      "rank": "12"
+    },
+    {
+      "name": "Miles Davis",
+      "album": "Kind of Blue",
+      "year": "1959",
+      "rank": "13"
+    },
+    {
+      "name": "The Who",
+      "album": "Who's Next",
+      "year": "1971",
+      "rank": "14"
+    },
+    {
+      "name": "Jimi Hendrix",
+      "album": "Are You Experienced",
+      "year": "1967",
+      "rank": "15"
+    }
+  ]
