@@ -1,4 +1,6 @@
 #                               TAREA 5
+Nombre: Cristian Daniel Gómez Escobar
+Carne: 202107190
 ## ¿Que es Grafana?
  Grafana es una plataforma de visualización y monitoreo de código abierto que se utiliza para analizar y supervisar datos de diversas fuentes en tiempo real. Proporciona una interfaz de usuario intuitiva y altamente personalizable que permite crear paneles interactivos y gráficos visualmente atractivos.
 
